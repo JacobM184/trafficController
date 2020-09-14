@@ -12,7 +12,6 @@
 #define EW_RED 0x24
 
 unsigned int state = 5;
-unsigned int newModeFlag = 0;
 
 alt_u32 tlc_timer_isr(void* context){
 
@@ -94,31 +93,37 @@ int main()
 {
 	FILE *lcd;
 	lcd = fopen(LCD_NAME, "w");
-	unsigned int Mode = 0;
+	unsigned int currentMode = 0;
+	unsigned int prevMode = 0;
 
 	int lightCol = 500;
 
 	alt_alarm timer;
 	void* timerContext = (void*) &lightCol;
-
-	alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
-
   while(1){
 
 	  // update the mode value
-	  Mode = lcd_set_mode(Mode, lcd);
+	  currentMode = lcd_set_mode(Mode, lcd);
 
-	  if(newModeFlag == 1)
-	  {
-		  newModeFlag = 0;
-	  	  state = 5;
-	  	  lightCol = 500;
+	  if (currentMode != prevMode){
+		  if (prevMode == 0){
+			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+		  }
+		  else{
+			  alt_alarm_stop(&timer);
+			  usleep(1000);
+
+			  lightCol = 500;
+			  state = 5;
+
+			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+
+		  }
 	  }
 
 	  // switch statement to choose the traffic controller based on mode
-	  switch(Mode){
+	  switch(prevMode){
 	  case 1 :
-
 		  simple_tlc(timerContext);
 		  break;
 	  case 2 :
