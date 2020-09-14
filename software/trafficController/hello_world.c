@@ -3,14 +3,15 @@
 #include <altera_avalon_pio_regs.h>
 #include "sys/alt_alarm.h"
 
-#define NS_GREEN 0x21
-#define NS_YELLOW 0x22
-#define NS_RED 0x24
+#define NS_GREEN 0x21 	// LED configuration for G,R state
+#define NS_YELLOW 0x22	// LED configuration for Y,R state
+#define NS_RED 0x24		// LED configuration for R,R state
 
-#define EW_GREEN 0xC
-#define EW_YELLOW 0x14
-#define EW_RED 0x24
+#define EW_GREEN 0xC	// LED configuration for R,G state
+#define EW_YELLOW 0x14	// LED configuration for R,Y state
+#define EW_RED 0x24		// LED configuration for R,R state
 
+// global state variable
 unsigned int state = 5;
 
 alt_u32 tlc_timer_isr(void* context){
