@@ -117,6 +117,7 @@ int main()
 			  state = 5;
 
 			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+			  prevMode = currentMode;
 
 		  }
 	  }
