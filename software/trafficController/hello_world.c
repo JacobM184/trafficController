@@ -45,9 +45,6 @@ int lcd_set_mode(unsigned int previousMode, FILE *lcd){
 		}
 	}
 
-	if (output != previousMode){
-		newModeFlag = 1;
-	}
 	// return mode
 	return output;
 }
@@ -95,6 +92,7 @@ int main()
 	lcd = fopen(LCD_NAME, "w");
 	unsigned int currentMode = 0;
 	unsigned int prevMode = 0;
+	unsigned int initFlag = 1;
 
 	int lightCol = 500;
 
@@ -103,11 +101,12 @@ int main()
   while(1){
 
 	  // update the mode value
-	  currentMode = lcd_set_mode(Mode, lcd);
+	  currentMode = lcd_set_mode(currentMode, lcd);
 
 	  if (currentMode != prevMode){
-		  if (prevMode == 0){
+		  if (initFlag == 1){
 			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+			  initFlag = 0;
 		  }
 		  else{
 			  alt_alarm_stop(&timer);
