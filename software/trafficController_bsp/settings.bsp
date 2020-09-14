@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>14/09/2020 5:19:47 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1600060787758</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>C:\Users\Jacob\Desktop\COMPSYS303\Assignment\Assignment1\Prebuilt_Nios\software\trafficController_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>14/09/2020 5:48:56 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1600062536088</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>D:\Altera_Quartus\workspaces\Assignment_1_COMPSYS303\trafficController\software\trafficController_bsp</BspGeneratedLocation>
         <BspSettingsFile>.\settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\nios2_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
