@@ -1,24 +1,55 @@
-/*
- * "Hello World" example.
- *
- * This example prints 'Hello from Nios II' to the STDOUT stream. It runs on
- * the Nios II 'standard', 'full_featured', 'fast', and 'low_cost' example
- * designs. It runs with or without the MicroC/OS-II RTOS and requires a STDOUT
- * device in your system's hardware.
- * The memory footprint of this hosted application is ~69 kbytes by default
- * using the standard reference design.
- *
- * For a reduced footprint version of this template, and an explanation of how
- * to reduce the memory footprint for a given application, see the
- * "small_hello_world" template.
- *
- */
-
+#include <system.h>
 #include <stdio.h>
+#include <altera_avalon_pio_regs.h>
+#include "sys/alt_alarm.h"
+
+alt_u32 tlc_timer_isr(void* context){
+
+	int *timeOut = (int*)context;
+	return *timeOut;
+
+}
+
+// this function sets the mode value based on inputs from the SWITCHES
+int lcd_set_mode(unsigned int previousMode, FILE *lcd){
+
+
+	int output = IORD_ALTERA_AVALON_PIO_DATA(SWITCHES_BASE);
+
+	if(lcd != NULL){
+		if(output != previousMode){
+			#define ESC 27
+			#define CLEAR_LCD_STRING "[2J"
+			fprintf(lcd, "%c%s", ESC, CLEAR_LCD_STRING);
+			fprintf(lcd, "CURRENT MODE: %d\n", output);
+		}
+	}
+	return output;
+}
 
 
 
 int main()
 {
+  FILE *lcd;
+  unsigned int previousMode = 0;
 
+  alt_alarm timer;
+  int lightCol = 0;
+
+
+  void* timerContext = (void*) &lightCol;
+
+  lcd = fopen(LCD_NAME, "w");
+
+  while(1){
+
+	  previousMode = lcd_set_mode(previousMode, lcd);
+
+
+  }
+
+  fclose(lcd);
+
+  return 0;
 }
