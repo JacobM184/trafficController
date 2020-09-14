@@ -3,7 +3,16 @@
 #include <altera_avalon_pio_regs.h>
 #include "sys/alt_alarm.h"
 
-unsigned int state = 0;
+#define NS_GREEN 0x21
+#define NS_YELLOW 0x22
+#define NS_RED 0x24
+
+#define EW_GREEN 0xC
+#define EW_YELLOW 0x14
+#define EW_RED 0x24
+
+unsigned int state = 5;
+unsigned int newModeFlag = 0;
 
 alt_u32 tlc_timer_isr(void* context){
 
@@ -20,12 +29,14 @@ alt_u32 tlc_timer_isr(void* context){
 
 }
 
+
 // this function sets the mode value based on inputs from the SWITCHES
 int lcd_set_mode(unsigned int previousMode, FILE *lcd){
 
-
+	// read switch value
 	int output = IORD_ALTERA_AVALON_PIO_DATA(SWITCHES_BASE);
 
+	// update lcd display if necessary
 	if(lcd != NULL){
 		if(output != previousMode){
 			#define ESC 27
@@ -34,10 +45,15 @@ int lcd_set_mode(unsigned int previousMode, FILE *lcd){
 			fprintf(lcd, "CURRENT MODE: %d\n", output);
 		}
 	}
+
+	if (output != previousMode){
+		newModeFlag = 1;
+	}
+	// return mode
 	return output;
 }
 
-//The simple controller
+//the simple controller
 void simple_tlc(void* timerContext){
 
 	int* timerValue = (int*) timerContext;
@@ -45,44 +61,64 @@ void simple_tlc(void* timerContext){
 	switch (state)
 	{
 	case 0:
-		*timerValue = 500;
+		*timerValue = 2000;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, NS_GREEN);
 		break;
 	case 1:
-		*timerValue = 6000;
+		*timerValue = 500;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, NS_YELLOW);
 		break;
 	case 2:
-		*timerValue = 2000;
+		*timerValue = 6000;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, NS_RED);
 		break;
 	case 3:
-		*timerValue = 500;
+		*timerValue = 2000;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, EW_GREEN);
 		break;
 	case 4:
-		*timerValue = 6000;
+		*timerValue = 500;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, EW_YELLOW);
 		break;
 	case 5:
-		*timerValue = 2000;
+		*timerValue = 6000;
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, EW_RED);
 		break;
 	default:
 		break;
 	}
 }
 
+
 int main()
 {
-  FILE *lcd;
-  lcd = fopen(LCD_NAME, "w");
-  unsigned int previousMode = 0;
+	FILE *lcd;
+	lcd = fopen(LCD_NAME, "w");
+	unsigned int Mode = 0;
 
-  int lightCol = 6000;
-  int currentState = 1;
+	int lightCol = 500;
 
-  alt_alarm timer;
-  void* timerContext = (void*) &lightCol;
-  alt_timer_start(&timer, lightCol, tlc_timer_isr, timerContext);
+	alt_alarm timer;
+	void* timerContext = (void*) &lightCol;
+
+	alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
 
   while(1){
-	  switch(previousMode){
+
+	  // update the mode value
+	  Mode = lcd_set_mode(Mode, lcd);
+
+	  if(newModeFlag == 1)
+	  {
+		  newModeFlag = 0;
+	  	  state = 5;
+	  	  lightCol = 500;
+	  }
+
+	  // switch statement to choose the traffic controller based on mode
+	  switch(Mode){
 	  case 1 :
+
 		  simple_tlc(timerContext);
 		  break;
 	  case 2 :
@@ -95,10 +131,10 @@ int main()
 		  break;
 	  }
 
-	  previousMode = lcd_set_mode(previousMode, lcd);
 
   }
 
+  // close the lcd file (should not occur)
   fclose(lcd);
 
   return 0;
