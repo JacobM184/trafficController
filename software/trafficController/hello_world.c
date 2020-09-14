@@ -117,9 +117,9 @@ int main()
 			  state = 5;
 
 			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
-			  prevMode = currentMode;
-
 		  }
+
+		  prevMode = currentMode;
 	  }
 
 	  // switch statement to choose the traffic controller based on mode
