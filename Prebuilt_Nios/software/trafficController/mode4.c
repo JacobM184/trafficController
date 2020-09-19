@@ -12,6 +12,7 @@ unsigned int waitEvenPress = 0;
 unsigned int carEntering = 0;
 unsigned int carLeaving = 0;
 unsigned int timeout = 0;
+unsigned int snapTaken = 0;
 
 // initialise variable to hold time value
 int y = 0;
@@ -89,7 +90,7 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 			// transmit leaving message, and time in intersection
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 
 			// set flag to 0
@@ -133,18 +134,24 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 			fprintf(transmitter, "%s", snapTakenString);
 			fclose(transmitter);
 
-			// set flag to 0
 			timeout = 0;
+			snapTaken = 1;
+
 		}
 
 		// check for car leaving
 		if(carLeaving == 1){
 
+			if(snapTaken == 0){
+				alt_alarm_stop(&camTimer);
+				timeout = 0;
+			}
+
 			// print vehicle left message, and time in intersection
 			transmitter = fopen(UART_NAME, "w");
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 
 			// set flag to 0
@@ -175,12 +182,15 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 			transmitter = fopen(UART_NAME, "w");
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 
 			// set flag to 0
 			carLeaving = 0;
 		}
+
+		// reset snapTaken flag
+		snapTaken = 0;
 		break;
 
 	case 3:
@@ -193,7 +203,7 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 			transmitter = fopen(UART_NAME, "w");
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 			carLeaving = 0;
 		}
@@ -233,16 +243,22 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 
 			// set flag to 0
 			timeout = 0;
+			snapTaken = 1;
 		}
 
 		// check if car is leaving
 		if(carLeaving == 1){
 
+			if(snapTaken == 0){
+				alt_alarm_stop(&camTimer);
+				timeout = 0;
+			}
+
 			// preint vehicle left message, and time in intersection
 			transmitter = fopen(UART_NAME, "w");
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 
 			// set flag to 0
@@ -273,12 +289,15 @@ void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter, void*
 			transmitter = fopen(UART_NAME, "w");
 			fprintf(transmitter, "%s", vehicleLeftString);
 			fprintf(transmitter, "%s", timeTakenString);
-			fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
+			fprintf(transmitter, "%f \n\n", ((float)y/alt_ticks_per_second()));
 			fclose(transmitter);
 
 			// set flag to 0
 			carLeaving = 0;
 		}
+
+		// reset snapTaken flag
+		snapTaken = 0;
 		break;
 	default:
 		break;
