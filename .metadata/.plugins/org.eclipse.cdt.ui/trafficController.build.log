@@ -1,6 +1,9 @@
-17:49:09 **** Clean-only build of configuration Nios II for project trafficController ****
-make clean 
-[trafficController clean complete]
+00:18:49 **** Incremental Build of configuration Nios II for project trafficController ****
+make all 
+Info: Building ../trafficController_bsp/
+C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../trafficController_bsp/
+[BSP build complete]
+[trafficController build complete]
 
-17:49:09 Build Finished (took 468ms)
+00:18:50 Build Finished (took 1s.367ms)
 

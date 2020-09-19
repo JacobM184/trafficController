@@ -1,0 +1,56 @@
+#include <system.h>
+#include <stdio.h>
+#include <altera_avalon_pio_regs.h>
+#include "ledLocation.h"
+
+
+void configurable_tlc(void* timerContext, unsigned int state){
+	int* timerValue = (int*) timerContext;
+
+		switch (state)
+		{
+		case 0:
+			// set timer value for next
+			*timerValue = 2000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GR);
+			break;
+
+		case 1:
+			// set timer value for next
+			*timerValue = 500;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, YR);
+			break;
+
+		case 2:
+			// set timer value for next
+			*timerValue = 6000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+			break;
+
+		case 3:
+			// set timer value for next
+			*timerValue = 2000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RG);
+			break;
+
+		case 4:
+			// set timer value for next
+			*timerValue = 500;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RY);
+			break;
+
+		case 5:
+			// set timer value for next
+			*timerValue = 6000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+			break;
+		default:
+			break;
+		}
+}

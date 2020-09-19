@@ -1,0 +1,208 @@
+#include <system.h>
+#include <stdio.h>
+#include <string.h>
+#include <altera_avalon_pio_regs.h>
+#include "sys/alt_alarm.h"
+#include "ledLocation.h"
+#include "mode2.h"
+#include "mode3.h"
+
+// global state variable
+unsigned int state = 5;
+char input = '1';
+
+alt_u32 tlc_timer_isr(void* context){
+
+	int *timeOut = (int*)context;
+
+	//Go to next state
+	if (state < 5){
+		state++;
+	}
+	else{
+		state = 0;
+	}
+
+	return *timeOut;
+
+}
+
+
+// this function sets the mode value based on inputs from the SWITCHES
+int lcd_set_mode(unsigned int previousMode, FILE *lcd){
+
+	// read switch value
+	int output = IORD_ALTERA_AVALON_PIO_DATA(SWITCHES_BASE) & 0x7;
+
+	// update lcd display if necessary
+	if(lcd != NULL){
+		if(output != previousMode){
+			#define ESC 27
+			#define CLEAR_LCD_STRING "[2J"
+			fprintf(lcd, "%c%s", ESC, CLEAR_LCD_STRING);
+			fprintf(lcd, "CURRENT MODE: %d\n", output);
+		}
+	}
+
+	// return mode
+	return output;
+}
+
+//the simple controller
+void simple_tlc(void* timerContext){
+
+	int* timerValue = (int*) timerContext;
+
+	switch (state)
+	{
+	case 0:
+		// set timer value for next
+		*timerValue = 2000;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GR);
+		break;
+
+	case 1:
+		// set timer value for next
+		*timerValue = 500;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, YR);
+		break;
+
+	case 2:
+		// set timer value for next
+		*timerValue = 6000;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+		break;
+
+	case 3:
+		// set timer value for next
+		*timerValue = 2000;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RG);
+		break;
+
+	case 4:
+		// set timer value for next
+		*timerValue = 500;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RY);
+		break;
+
+	case 5:
+		// set timer value for next
+		*timerValue = 6000;
+		// set current LEDs
+		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+		break;
+	default:
+		break;
+	}
+}
+
+
+int main()
+{
+	// set up LCD file and open in writing mode
+	FILE *lcd;
+	lcd = fopen(LCD_NAME, "w");
+
+	// set up UART
+	FILE *receiver;
+	//receiver = fopen(UART_NAME, "r+");
+
+
+	// initialize variables and flag
+	unsigned int currentMode = 0;
+	unsigned int prevMode = 0;
+	unsigned int initFlag = 1;
+
+	int lightCol = 500;
+
+	// set up timer
+	alt_alarm timer;
+	void* timerContext = (void*) &lightCol;
+
+	// register interrupt
+	unsigned int buttonValue = 0;
+	void* context_going_to_be_passed = (void*) &buttonValue;
+	init_buttons_pio();
+	alt_irq_register(BUTTONS_IRQ, context_going_to_be_passed, NSEW_ped_isr);
+
+//	char input = 0;
+//	int i = 0;
+//	while(1){
+//		input = getc(receiver);
+//
+//		if(input == '\n'){
+//			break;
+//		}
+//
+//		printf("character is: %c \n", input);
+//
+//
+//	}
+//	printf("I made it! \n");
+//	fclose(receiver);
+
+  while(1){
+
+	  // update the mode value
+	  currentMode = lcd_set_mode(currentMode, lcd);
+
+	  // check for change in mode
+	  if (currentMode != prevMode){
+
+		  // start timer on first startup
+		  if (initFlag == 1){
+			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+			  initFlag = 0;
+		  }
+
+		  // restart timer when mode changed and not restarted
+		  else{
+			  alt_alarm_stop(&timer);
+			  usleep(1000);
+
+			  lightCol = 500;
+			  state = 5;
+
+			  alt_alarm_start(&timer, lightCol, tlc_timer_isr, timerContext);
+		  }
+
+		  // update previous mode value
+		  prevMode = currentMode;
+	  }
+
+	  // switch statement to choose the traffic controller based on mode
+	  switch(prevMode){
+
+	  case 1 :
+		  // run controller for Mode 1
+		  simple_tlc(timerContext);
+		  break;
+
+	  case 2 :
+		  pedestrian_tlc(timerContext,state);
+		  break;
+
+	  case 3 :
+		  configurable_tlc(timerContext, state, receiver);
+		  break;
+
+	  case 4 :
+		  break;
+
+	  default :
+		  break;
+	  }
+
+
+  }
+
+  // close the LCD file (should not occur)
+  fclose(lcd);
+
+  return 0;
+}

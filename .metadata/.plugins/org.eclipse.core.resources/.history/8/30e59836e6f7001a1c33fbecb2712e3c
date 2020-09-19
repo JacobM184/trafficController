@@ -1,0 +1,121 @@
+#include <system.h>
+#include <stdio.h>
+#include <altera_avalon_pio_regs.h>
+#include "ledLocation.h"
+
+unsigned int pedNS = 0;
+unsigned int pedEW = 0;
+unsigned int NSHandled = 1;
+unsigned int EWHandled = 1;
+
+void init_buttons_pio(){
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE, 0);
+    IOWR_ALTERA_AVALON_PIO_IRQ_MASK(BUTTONS_BASE, 0x3);
+
+}
+
+void NSEW_ped_isr(void* context, alt_u32 id){
+
+    int* temp = (int*) context;
+    (*temp) = IORD_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE);
+
+    // clears the edge capture register
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE, 0);
+
+    int NSraised = *temp & 0x01;
+    int EWraised = *temp & 0x02;
+
+    if(NSraised && pedNS == 0){
+        pedNS = 1;
+        NSHandled = 0;
+    }
+
+    if(EWraised && pedEW == 0){
+        pedEW = 1;
+        EWHandled = 0;
+    }
+}
+
+void pedestrian_tlc(void* timerContext, unsigned int state){
+
+	int* timerValue = (int*) timerContext;
+
+	switch (state)
+		{
+		case 0:
+			// set timer value for next
+			*timerValue = 2000;
+			// set current LEDs
+			if(pedNS == 1){
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GRP);
+				NSHandled = 1;
+
+			}else{
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GR);
+			}
+
+			break;
+
+		case 1:
+
+			if(NSHandled == 1){
+				pedNS = 0;
+			}
+
+			// set timer value for next
+			*timerValue = 500;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, YR);
+
+			break;
+
+		case 2:
+			// set timer value for next
+			*timerValue = 6000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+
+			break;
+
+		case 3:
+			// set timer value for next
+			*timerValue = 2000;
+			// set current LEDs
+			if(pedEW == 1){
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RGP);
+				EWHandled = 1;
+
+			}else{
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RG);
+			}
+
+			break;
+
+		case 4:
+
+			if(EWHandled == 1){
+				pedEW = 0;
+			}
+
+			// set timer value for next
+			*timerValue = 500;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RY);
+
+			break;
+
+		case 5:
+			// set timer value for next
+			*timerValue = 6000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+
+			break;
+		default:
+			break;
+		}
+}

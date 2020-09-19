@@ -1,0 +1,10 @@
+
+
+#ifndef MODE3_H_
+#define MODE3_H_
+
+void configurable_tlc(void* timerContext);
+void timeout_data_handler();
+
+#endif /* MODE3_H_ */
+

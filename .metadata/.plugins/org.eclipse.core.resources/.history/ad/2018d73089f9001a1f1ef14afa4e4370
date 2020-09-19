@@ -1,0 +1,15 @@
+/*
+ * mode4.h
+ *
+ *  Created on: 18/09/2020
+ *      Author: Jacob
+ */
+
+#ifndef MODE4_H_
+#define MODE4_H_
+
+void camera_tlc(void* timerContext, unsigned int state, FILE *transmitter);
+void handle_vehicle_button(unsigned int time);
+alt_u32 camera_timer_isr(void* timerContext);
+
+#endif /* MODE4_H_ */

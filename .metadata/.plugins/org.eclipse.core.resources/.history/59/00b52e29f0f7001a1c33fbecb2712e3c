@@ -1,0 +1,170 @@
+#include <system.h>
+#include <stdio.h>
+#include <altera_avalon_pio_regs.h>
+#include "ledLocation.h"
+
+// flags check for pedestrian buttons pressed
+unsigned int pedNS = 0;
+unsigned int pedEW = 0;
+
+// flags to check for pedestrian button lit
+unsigned int NSHandled = 1;
+unsigned int EWHandled = 1;
+
+// flags to check for pedestrians waiting
+unsigned int receivedEW = 0;
+unsigned int receivedNS = 0;
+
+void init_buttons_pio(){
+
+	// clear interrupt register
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE, 0);
+
+    // enable interrupts for BUTTON_0 and BUTTON_1
+    IOWR_ALTERA_AVALON_PIO_IRQ_MASK(BUTTONS_BASE, 0x3);
+
+}
+
+void NSEW_ped_isr(void* context, alt_u32 id){
+
+    int* temp = (int*) context;
+    (*temp) = IORD_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE);
+
+    // clears the edge capture register
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE, 0);
+
+    // store interrupt value of BUTTON_0
+    int NSraised = *temp & 0x01;
+
+    // store interrupt value of BUTTON_1
+    int EWraised = *temp & 0x02;
+
+    // set flags for NS pedestrian
+    if(NSraised && pedNS == 0){
+        pedNS = 1;
+        NSHandled = 0;
+    }
+
+    // set flags for EW pedestrian
+    if(EWraised && pedEW == 0){
+        pedEW = 1;
+        EWHandled = 0;
+    }
+}
+
+void pedestrian_tlc(void* timerContext, unsigned int state){
+
+	int* timerValue = (int*) timerContext;
+
+	switch (state)
+		{
+
+		// Case for G,R and G,R,P1 states
+		case 0:
+
+			// set timer value for next state
+			*timerValue = 2000;
+
+			// check for pedestrian waiting
+			if((pedNS == 1) && (receivedNS == 1)){
+
+				// set LEDs for G,R,P1 & update handled flag
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GRP);
+				NSHandled = 1;
+
+			}else{
+
+				// set LEDs for G,R
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GR);
+			}
+
+			break;
+
+		// case for Y,R state
+		case 1:
+
+			// update pedestrian button pressed and waiting flags for NS
+			if(NSHandled == 1){
+				pedNS = 0;
+				receivedNS = 0;
+			}
+
+			// set timer value for next state
+			*timerValue = 500;
+
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, YR);
+
+			break;
+
+		// case for R,R state 2 (i.e. bottom R,R state)
+		case 2:
+
+			// set timer value for next state
+			*timerValue = 6000;
+
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+
+			// update pedestrian waiting flags
+			if(pedEW == 1){
+				receivedEW = 1;
+			}
+			if(pedNS == 1){
+				receivedNS = 1;
+			}
+
+			break;
+
+		// case for R,G and R,G,P2 states
+		case 3:
+
+			// set timer value for next state
+			*timerValue = 2000;
+
+
+			if((pedEW == 1) && (receivedEW == 1)){
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RGP);
+				EWHandled = 1;
+
+			}else{
+
+				IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RG);
+			}
+
+			break;
+
+		case 4:
+
+
+			if(EWHandled == 1){
+				pedEW = 0;
+				receivedEW = 0;
+			}
+
+			// set timer value for next
+			*timerValue = 500;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RY);
+
+			break;
+
+		case 5:
+			// set timer value for next
+			*timerValue = 6000;
+			// set current LEDs
+			IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
+
+			if(pedEW == 1){
+				receivedEW = 1;
+			}
+			if(pedNS == 1){
+				receivedNS = 1;
+			}
+
+			break;
+		default:
+			break;
+		}
+}

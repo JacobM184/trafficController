@@ -1,0 +1,15 @@
+/*
+ * mode2.h
+ *
+ *  Created on: 16/09/2020
+ *      Author: Jacob
+ */
+
+#ifndef MODE2_H_
+#define MODE2_H_
+
+void init_buttons_pio();
+void pedestrian_tlc()
+
+
+#endif /* MODE2_H_ */

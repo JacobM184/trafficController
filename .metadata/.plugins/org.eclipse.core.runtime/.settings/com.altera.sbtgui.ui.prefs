@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-newSoftwareExampleWizardPage.defaultLocation=D\:\\Altera_Quartus\\workspaces\\Assignment_1_COMPSYS303\\trafficController\\software\\trafficController
-newSoftwareExampleWizardPage.sopcinfoFile=D\:\\Altera_Quartus\\workspaces\\Assignment_1_COMPSYS303\\trafficController\\nios2_system.sopcinfo
-newSoftwareExampleWizardPage2.newBspLocation=D\:\\Altera_Quartus\\workspaces\\Assignment_1_COMPSYS303\\trafficController\\software\\trafficController_bsp
+newSoftwareExampleWizardPage.defaultLocation=C\:\\Users\\Jacob\\Desktop\\COMPSYS303\\Assignment\\Assignment1\\Prebuilt_Nios\\software\\trafficController
+newSoftwareExampleWizardPage.sopcinfoFile=C\:\\Users\\Jacob\\Desktop\\COMPSYS303\\Assignment\\Assignment1\\Prebuilt_Nios\\nios2_system.sopcinfo
+newSoftwareExampleWizardPage2.newBspLocation=C\:\\Users\\Jacob\\Desktop\\COMPSYS303\\Assignment\\Assignment1\\Prebuilt_Nios\\software\\trafficController_bsp

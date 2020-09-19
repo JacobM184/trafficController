@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project>
-	<configuration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.1416302248" name="Nios II">
+	<configuration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.187885534" name="Nios II">
 		<extension point="org.eclipse.cdt.core.LanguageSettingsProvider">
 			<provider id="altera.tool.Nios2GCCBuiltinSpecsDetector">
 				<language id="org.eclipse.cdt.core.gcc">
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include-fixed">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include-fixed">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/nios2-elf/include">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/nios2-elf/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="NIOS2" value="1">
@@ -675,22 +675,22 @@
 					</entry>
 				</language>
 				<language id="org.eclipse.cdt.core.g++">
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0/nios2-elf">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0/nios2-elf">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0/backward">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/nios2-elf/include/c++/5.3.0/backward">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include-fixed">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/lib/gcc/nios2-elf/5.3.0/include-fixed">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="D:/Altera_Quartus/nios2eds/bin/gnu/H-x86_64-mingw32/nios2-elf/include">
+					<entry kind="includePath" name="C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/nios2-elf/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="NIOS2" value="1">
@@ -1374,6 +1374,66 @@
 					<entry kind="macro" name="nios2_little_endian" value="1">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
+				</language>
+			</provider>
+			<provider id="altera.tool.Nios2GCCBuildCommandParser">
+				<language id="org.eclipse.cdt.core.gcc">
+					<resource project-relative-path="mode3.c">
+						<entry kind="includePath" name="/trafficController_bsp/HAL/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp/drivers/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="macro" name="ALT_NO_INSTRUCTION_EMULATION" value=""/>
+						<entry kind="macro" name="ALT_SINGLE_THREADED" value=""/>
+						<entry kind="macro" name="__hal__" value=""/>
+					</resource>
+					<resource project-relative-path="mode2.c">
+						<entry kind="includePath" name="/trafficController_bsp/HAL/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp/drivers/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="macro" name="ALT_NO_INSTRUCTION_EMULATION" value=""/>
+						<entry kind="macro" name="ALT_SINGLE_THREADED" value=""/>
+						<entry kind="macro" name="__hal__" value=""/>
+					</resource>
+					<resource project-relative-path="hello_world.c">
+						<entry kind="includePath" name="/trafficController_bsp/HAL/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp/drivers/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="macro" name="ALT_NO_INSTRUCTION_EMULATION" value=""/>
+						<entry kind="macro" name="ALT_SINGLE_THREADED" value=""/>
+						<entry kind="macro" name="__hal__" value=""/>
+					</resource>
+					<resource project-relative-path="mode4.c">
+						<entry kind="includePath" name="/trafficController_bsp/HAL/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="includePath" name="/trafficController_bsp/drivers/inc">
+							<flag value="VALUE_WORKSPACE_PATH|RESOLVED"/>
+						</entry>
+						<entry kind="macro" name="ALT_NO_INSTRUCTION_EMULATION" value=""/>
+						<entry kind="macro" name="ALT_SINGLE_THREADED" value=""/>
+						<entry kind="macro" name="__hal__" value=""/>
+					</resource>
 				</language>
 			</provider>
 		</extension>

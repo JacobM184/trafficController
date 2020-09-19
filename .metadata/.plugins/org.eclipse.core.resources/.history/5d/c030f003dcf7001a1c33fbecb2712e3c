@@ -1,0 +1,18 @@
+/*
+ * mode2.h
+ *
+ *  Created on: 16/09/2020
+ *      Author: Jacob
+ */
+
+#ifndef MODE2_H_
+#define MODE2_H_
+
+extern unsigned int pedNS, pedEW;
+
+
+void init_buttons_pio();
+void pedestrian_tlc();
+void NSEW_ped_isr();
+
+#endif /* MODE2_H_ */
