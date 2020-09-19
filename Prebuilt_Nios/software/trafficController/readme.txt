@@ -1,26 +1,27 @@
-Readme - Hello World Software Example
+Readme - Four-mode Traffic Controller
 
 DESCRIPTION:
-Simple program that prints "Hello from Nios II"
-
-The memory footprint of this hosted application is intended to be small (under 100 kbytes) by default
-using a standard reference deisgn.
-
-For an even smaller, reduced footprint version of this template, and an explanation of how
-to reduce the memory footprint for a given application, see the
-"small_hello_world" template.
+Program that offers 4 modes of traffic control options via the DE2-115 board. These options are: basic traffic controller (Mode 1), traffic controller with pedestrian support (Mode 2), traffic controller configurable via UART (Mode 3), and traffic controller with camera (Mode 4).
 
 
 PERIPHERALS USED:
 This example exercises the following peripherals:
-- STDOUT device (UART or JTAG UART)
+- UART
+- GREEN_LEDS
+- SWITCHES
+- BUTTONS
+- LCD
 
 SOFTWARE SOURCE FILES:
 This example includes the following software source files:
-- hello_world.c: Everyone needs a Hello World program, right?
+- hello_world.c
+- mode2.h
+- mode2.c
+- mode3.h
+- mode3.c
+- mode4.h
+- mode4.c
 
 BOARD/HOST REQUIREMENTS:
-This example requires only a JTAG connection with a Nios Development board. If
-the host communication settings are changed from JTAG UART (default) to use a
-conventional UART, a serial cable between board DB-9 connector  and the host is
-required.
+- built for a DE2-115 development board with NIOSII programmed
+- This program requires a USB to RS-232 connection for Mode 3 & 4.
