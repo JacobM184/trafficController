@@ -9,18 +9,14 @@
 #include "mode3.h"
 #include "mode4.h"
 
-//char* vehicleString = "Vehicle left";
-//char* snapString = "Snapshot taken";
-//char* timeString = "Time in intersection: ";
-
 // global state variable
 unsigned int state = 5;
-char input = '1';
 unsigned int prevMode = 0;
 
-
+// main timer ISR
 alt_u32 tlc_timer_isr(void* context){
-
+	
+	// dereference timeout value
 	int *timeOut = (int*)context;
 
 	//Go to next state
@@ -35,6 +31,7 @@ alt_u32 tlc_timer_isr(void* context){
 
 }
 
+// button IRS
 void button_interrupts(void* context, alt_u32 id){
 	int* temp = (int*) context;
 	(*temp) = IORD_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE);
@@ -42,9 +39,11 @@ void button_interrupts(void* context, alt_u32 id){
 	// clears the edge capture register
 	IOWR_ALTERA_AVALON_PIO_EDGE_CAP(BUTTONS_BASE, 0);
 
+	// ISR behaviour for mode 2
 	if(prevMode == 2){
 		NSEW_ped_isr(temp);
 	}
+	// ISR behaviour for mode 4
 	else if(prevMode == 4){
 		handle_vehicle_button(temp);
 	}
@@ -80,42 +79,42 @@ void simple_tlc(void* timerContext){
 	switch (state)
 	{
 	case 0:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 2000;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, GR);
 		break;
 
 	case 1:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 500;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, YR);
 		break;
 
 	case 2:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 6000;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
 		break;
 
 	case 3:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 2000;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RG);
 		break;
 
 	case 4:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 500;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RY);
 		break;
 
 	case 5:
-		// set timer value for next
+		// set timer value for next state
 		*timerValue = 6000;
 		// set current LEDs
 		IOWR_ALTERA_AVALON_PIO_DATA(LEDS_GREEN_BASE, RR);
@@ -154,7 +153,6 @@ int main()
 	//set up camera timer
 	void* cameraContext = (void*)randomNum;
 
-	int y = 0;
 
 
 	// register interrupt
@@ -213,15 +211,6 @@ int main()
 
 	  case 4 :
 		  camera_tlc(timerContext, state, transmitter, cameraContext);
-//		  if(a){
-//			  transmitter = fopen(UART_NAME, "w");
-//			  fprintf(transmitter, "%s \n", vehicleString);
-//			  fprintf(transmitter, "%s", timeString);
-//			  fprintf(transmitter, "%f \n", ((float)y/alt_ticks_per_second()));
-//			  fclose(transmitter);
-//			  a = 0;
-//			  printf("made it");
-//		  }
 		  break;
 
 	  default :
