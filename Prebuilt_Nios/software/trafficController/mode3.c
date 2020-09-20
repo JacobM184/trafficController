@@ -16,17 +16,17 @@ int timeValues[6] = {500,6000,2000,500,6000,2000};
 
 //returns true or (1) when the UART sequence is valid
 unsigned int check_uart_sequence() {
-    //intialist the variables used to track down the amount of values entered
+	 //intialise the variables used to track down the amount of values entered
     int numCounter = 1;
     int digitCounter = 0;
     unsigned int commaDetector = 0;
 
-    //loops through the sequence 
-    for (int i = 0; sequence[i] != '\n'; i++) {
+    //loops through the sequence
+    for (int i = 0; (sequence[i] != '\n') && (sequence[i] != '\r'); i++) {
 
-        //Checks if the value after the comma is a valid number
-        //if the value is valid then the detector resets and increments
-        //The value tracker
+    	//Checks if the value after the comma is a valid number
+		//if the value is valid then the detector resets and increments
+		//The value tracker
         if (commaDetector) {
             if (!isdigit((char)sequence[i])) {
                 return 0;
@@ -38,9 +38,9 @@ unsigned int check_uart_sequence() {
         }
 
         //This detects if the value is a number or a comma
-        //If the value is not valid it will return a false
+		//If the value is not valid it will return a false
         if (!isdigit((char)sequence[i]) && (sequence[i] != '\r')) {
-            //Checks if the first value in a input is a number
+        	//Checks if the first value in a input is a number
             if (i == 0) {
                 return 0;
             }
@@ -58,15 +58,16 @@ unsigned int check_uart_sequence() {
             }
         }
 
-        //keeps track how much digit each number entered 
-        //has and if it is over 4 it returns a false
+        //keeps track how much digit each number entered
+		//has and if it is over 4 it returns a false
         if (isdigit((char)sequence[i])) {
             digitCounter++;
         }
     }
 
-    //Detects if six values has been entered in the 
-    //UART and that the last number has 4 digits
+
+    //Detects if six values has been entered in the
+	//UART and that the last number has 4 digits
     if (numCounter != 6 || digitCounter > 4) {
         return 0;
     }
@@ -86,11 +87,11 @@ void uart_receiver(FILE *receiver){
 	if(receiver != NULL){
 		for(;;){
 
-			c = getc(receiver);
+			c = fgetc(receiver);
 			sequence[count] = c;
 
-			// code to break loop when \n detected
-			if(c == '\n'){
+			// code to break loop when \n or \r detected
+			if((c == '\n') || (c == '\r')){
 				detectedNLine = 1;
 				break;
 			}
